@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradutor de Línguas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+        }
+
+        input,
+        select,
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tradutor de Línguas</h1>
+
+    <label for="inputText">Digite o texto:</label>
+    <input type="text" id="inputText" placeholder="Texto para traduzir">
+
+    <label for="languageSelect">Selecione a tradução:</label>
+    <select id="languageSelect">
+        <option value="ptToAbrs">Português para Abiribobs</option>
+        <option value="ptToCdd">Português para Cifra do Dragão</option>
+        <option value="abrsToPt">Abiribobs para Português</option>
+        <option value="cddToPt">Cifra do Dragão para Português</option>
+        <option value="cddToAbrs">Cifra do Dragão para Abiribobs</option>
+        <option value="abrsToCdd">Abiribobs para Cifra do Dragão</option>
+    </select>
+
+    <button id="translateButton">Traduzir</button>
+
+    <div id="output"></div>
+
+    <script>
+        // MAPEAMENTOS DE LETRAS
+        const ptToAbrs = { // PORTUGUÊS PRA ABIRIBOBS
+            // VOGAIS
+            'a': 'u',
+            'e': 'a',
+            'i': 'e',
+            'o': 'i',
+            'u': 'o',
+            // CONSOANTES
+            'b': 'z',
+            'c': 'b',
+            'd': 'c',
+            'f': 'd',
+            'g': 'f',
+            'h': 'h',
+            'j': 'g',
+            'k': 'j',
+            'l': 'l',
+            'm': 'k',
+            'n': 'n',
+            'p': 'm',
+            'q': 'p',
+            'r': 'r',
+            's': 's',
+            't': 'q',
+            'v': 't',
+            'w': 'w',
+            'x': 'v',
+            'y': 'y',
+            'z': 'x',
+
+            // CAPSLOCK
+
+            // Vogais
+            'A': 'U',
+            'E': 'A',
+            'I': 'E',
+            'O': 'I',
+            'U': 'O',
+
+            // Consoantes
+            'B': 'Z',
+            'C': 'B',
+            'D': 'C',
+            'F': 'C',
+            'G': 'F',
+            'H': 'H',
+            'J': 'G',
+            'K': 'J',
+            'L': 'L',
+            'M': 'K',
+            'N': 'N',
+            'P': 'M',
+            'Q': 'P',
+            'R': 'R',
+            'S': 'S',
+            'T': 'Q',
+            'V': 'T',
+            'W': 'W',
+            'X': 'V',
+            'Y': 'Y',
+            'Z': 'X',
+        };
+
+        const ptToCdd = { // PORTUGUÊS PRA CIFRA DO DRAGÃO
+            // VOGAIS
+            'a': 'o',
+            'e': 'i',
+            'i': 'e',
+            'o': 'u',
+            'u': 'a',
+            // CONSOANTES
+            'b': 'k',
+            'c': 'l',
+            'd': 'm',
+            'f': 'n',
+            'g': 'p',
+            'h': 'q',
+            'j': 'r',
+            'k': 's',
+            'l': 't',
+            'm': 'v',
+            'n': 'w',
+            'p': 'x',
+            'q': 'y',
+            'r': 'z',
+            's': 'b',
+            't': 'c',
+            'v': 'd',
+            'w': 'f',
+            'x': 'g',
+            'y': 'h',
+            'z': 'j',
+
+            // CAPSLOCK
+
+            // VOGAIS
+            'O': 'A',
+            'I': 'E',
+            'E': 'I',
+            'U': 'O',
+            'A': 'U',
+            // CONSOANTES
+            'K': 'B',
+            'L': 'C',
+            'M': 'D',
+            'N': 'F',
+            'P': 'G',
+            'Q': 'H',
+            'R': 'J',
+            'S': 'K',
+            'T': 'L',
+            'V': 'M',
+            'W': 'N',
+            'X': 'P',
+            'Y': 'Q',
+            'Z': 'R',
+            'B': 'S',
+            'C': 'T',
+            'D': 'V',
+            'F': 'W',
+            'G': 'X',
+            'H': 'Y',
+            'J': 'Z',
+        };
+
+        // ABIRIBOBS PRA PORTUGUÊS
+        const abrsToPt = {
+            // VOGAIS
+            'u': 'a',
+            'a': 'e',
+            'e': 'i',
+            'i': 'o',
+            'o': 'u',
+            // CONSOANTES
+            'z': 'b',
+            'b': 'c',
+            'c': 'd',
+            'd': 'f',
+            'f': 'g',
+            'h': 'h',
+            'g': 'j',
+            'j': 'k',
+            'l': 'l',
+            'k': 'm',
+            'n': 'n',
+            'm': 'p',
+            'p': 'q',
+            'r': 'r',
+            's': 's',
+            'q': 't',
+            't': 'v',
+            'w': 'w',
+            'v': 'x',
+            'y': 'y',
+            'x': 'z',
+
+            // CAPSLOCK
+
+            // VOGAIS
+            'U': 'A',
+            'A': 'E',
+            'E': 'I',
+            'I': 'O',
+            'O': 'U',
+            // CONSOANTES
+            'Z': 'B',
+            'B': 'C',
+            'C': 'D',
+            'D': 'F',
+            'F': 'G',
+            'H': 'H',
+            'G': 'J',
+            'J': 'K',
+            'L': 'L',
+            'K': 'M',
+            'N': 'N',
+            'M': 'P',
+            'P': 'Q',
+            'R': 'R',
+            'S': 'S',
+            'Q': 'T',
+            'T': 'V',
+            'W': 'W',
+            'V': 'X',
+            'Y': 'Y',
+            'X': 'Z',
+        };
+
+
+
+
+        // CIFRA DO DRAGÃO PRA PORTUGUÊS
+        const cddToPt = {
+            // VOGAIS
+            'o': 'a',
+            'i': 'e',
+            'e': 'i',
+            'u': 'o',
+            'a': 'u',
+            // CONSOANTES
+            'k': 'b',
+            'l': 'c',
+            'm': 'd',
+            'n': 'f',
+            'p': 'g',
+            'q': 'h',
+            'r': 'j',
+            's': 'k',
+            't': 'l',
+            'v': 'm',
+            'w': 'n',
+            'x': 'p',
+            'y': 'q',
+            'z': 'r',
+            'b': 's',
+            'c': 't',
+            'd': 'v',
+            'f': 'w',
+            'g': 'x',
+            'h': 'y',
+            'j': 'z',
+
+            // CAPSLOCK
+
+            // VOGAIS
+            'O': 'A',
+            'I': 'E',
+            'E': 'I',
+            'U': 'O',
+            'A': 'U',
+            // CONSOANTES
+            'K': 'B',
+            'L': 'C',
+            'M': 'D',
+            'N': 'F',
+            'P': 'G',
+            'Q': 'H',
+            'R': 'J',
+            'S': 'K',
+            'T': 'L',
+            'V': 'M',
+            'W': 'N',
+            'X': 'P',
+            'Y': 'Q',
+            'Z': 'R',
+            'B': 'S',
+            'C': 'T',
+            'D': 'V',
+            'F': 'W',
+            'G': 'X',
+            'H': 'Y',
+            'J': 'Z',
+        };
+
+        // CIFRA DO DRAGÃO PRA ABIRIBOBS
+        const cddToAbrs = {
+            // VOGAIS
+            'o': 'u',
+            'i': 'a',
+            'e': 'e',
+            'u': 'i',
+            'a': 'o',
+            // CONSOANTES
+            'k': 'z',
+            'l': 'b',
+            'm': 'c',
+            'n': 'f',
+            'p': 'g',
+            'q': 'h',
+            'r': 'j',
+            's': 'k',
+            't': 'l',
+            'v': 'm',
+            'w': 'n',
+            'x': 'p',
+            'y': 'q',
+            'z': 'r',
+            'b': 's',
+            'c': 't',
+            'd': 'v',
+            'f': 'w',
+            'g': 'x',
+            'h': 'y',
+            'j': 'z',
+
+            // CAPSLOCK
+
+            // VOGAIS
+            'O': 'U',
+            'I': 'A',
+            'E': 'E',
+            'U': 'I',
+            'A': 'O',
+            // CONSOANTES
+            'K': 'Z',
+            'L': 'B',
+            'M': 'C',
+            'N': 'F',
+            'P': 'G',
+            'Q': 'H',
+            'R': 'J',
+            'S': 'K',
+            'T': 'L',
+            'V': 'M',
+            'W': 'N',
+            'X': 'P',
+            'Y': 'Q',
+            'Z': 'R',
+            'B': 'S',
+            'C': 'T',
+            'D': 'V',
+            'F': 'W',
+            'G': 'X',
+            'H': 'Y',
+            'J': 'Z',
+        };
+
+        // ABIRIBOBS PRA CIFRA DO DRAGÃO
+        const abrsToCdd = {
+            // VOGAIS
+            'u': 'o',
+            'a': 'i',
+            'e': 'e',
+            'i': 'u',
+            'o': 'a',
+            // CONSOANTES
+            'z': 'k',
+            'b': 'l',
+            'c': 'm',
+            'f': 'n',
+            'g': 'p',
+            'h': 'q',
+            'j': 'r',
+            'k': 's',
+            'l': 't',
+            'm': 'v',
+            'n': 'w',
+            'p': 'x',
+            'q': 'y',
+            'r': 'z',
+            's': 'b',
+            't': 'c',
+            'v': 'd',
+            'w': 'f',
+            'x': 'g',
+            'y': 'h',
+            'z': 'j',
+
+            //CAPSLOCK
+
+            // VOGAIS
+            'U': 'O',
+            'A': 'I',
+            'E': 'E',
+            'I': 'U',
+            'O': 'A',
+            // CONSOANTES
+            'Z': 'K',
+            'B': 'L',
+            'C': 'M',
+            'F': 'N',
+            'G': 'P',
+            'H': 'Q',
+            'J': 'R',
+            'K': 'S',
+            'L': 'T',
+            'M': 'V',
+            'N': 'W',
+            'P': 'X',
+            'Q': 'Y',
+            'R': 'Z',
+            'S': 'B',
+            'T': 'C',
+            'V': 'D',
+            'W': 'F',
+            'X': 'G',
+            'Y': 'H',
+            'Z': 'J',
+        };
+
+        function translate(text, mapping) {
+            return text.split('').map(char => mapping[char] || char).join('');
+        }
+
+        document.getElementById('translateButton').addEventListener('click', function () {
+            const inputText = document.getElementById('inputText').value;
+            const selectedLanguage = document.getElementById('languageSelect').value;
+            let outputText = '';
+
+            switch (selectedLanguage) {
+                case 'ptToAbrs':
+                    outputText = translate(inputText, ptToAbrs);
+                    break;
+                case 'ptToCdd':
+                    outputText = translate(inputText, ptToCdd);
+                    break;
+                case 'abrsToPt':
+                    outputText = translate(inputText, abrsToPt);
+                    break;
+                case 'cddToPt':
+                    outputText = translate(inputText, cddToPt);
+                    break;
+                case 'cddToAbrs':
+                    outputText = translate(inputText, cddToAbrs);
+                    break;
+                case 'abrsToCdd':
+                    outputText = translate(inputText, abrsToCdd);
+                    break;
+            }
+
+            document.getElementById('output').textContent = outputText;
+        });
+    </script>
+</body>
+
+</html>
